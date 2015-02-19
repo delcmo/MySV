@@ -3,6 +3,17 @@
 #include "AppFactory.h"
 #include "ModulesApp.h"
 
+// kernels
+#include "SvMass.h"
+#include "SvMomentum.h"
+#include "SvDissipativeFlux.h"
+
+// eos
+#include "EquationOfState.h"
+
+// materials
+#include "EntropyViscosityCoefficient.h"
+
 template<>
 InputParameters validParams<MysvApp>()
 {
@@ -40,6 +51,16 @@ MysvApp::registerApps()
 void
 MysvApp::registerObjects(Factory & factory)
 {
+  // kernels
+  registerKernel(SvMass);
+  registerKernel(SvMomentum);
+  registerKernel(SvDissipativeFlux);
+
+  // eos
+  registerUserObject(EquationOfState);
+
+  // Materials
+  registerMaterial(EntropyViscosityCoefficient);
 }
 
 void
