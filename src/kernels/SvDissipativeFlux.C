@@ -56,7 +56,7 @@ Real SvDissipativeFlux::computeQpResidual()
     }
   }
   else
-  return 0.;
+    return 0.;
 }
 
 Real SvDissipativeFlux::computeQpJacobian()

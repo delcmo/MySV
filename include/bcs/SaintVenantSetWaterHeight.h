@@ -35,7 +35,6 @@ protected:
   MooseEnum _equ_type;
 
   // Coupled variables
-  VariableValue & _h;
   VariableValue & _hu;
 
   // Constants and parameters
@@ -45,7 +44,6 @@ protected:
   const EquationOfState & _eos;
 
   // Integers for jacobian terms
-  unsigned _h_var;
   unsigned _hu_var;
 };
 

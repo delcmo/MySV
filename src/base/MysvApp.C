@@ -4,9 +4,12 @@
 #include "ModulesApp.h"
 
 // kernels
-#include "SvMass.h"
-#include "SvMomentum.h"
+#include "WaterHeightEqu.h"
+#include "MomentumEqu.h"
 #include "SvDissipativeFlux.h"
+
+// bcs
+//#include "SaintVenantSetDensity.h"
 
 // eos
 #include "EquationOfState.h"
@@ -52,8 +55,8 @@ void
 MysvApp::registerObjects(Factory & factory)
 {
   // kernels
-  registerKernel(SvMass);
-  registerKernel(SvMomentum);
+  registerKernel(WaterHeightEqu);
+  registerKernel(MomentumEqu);
   registerKernel(SvDissipativeFlux);
 
   // eos

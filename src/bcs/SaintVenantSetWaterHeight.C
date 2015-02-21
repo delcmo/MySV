@@ -1,6 +1,8 @@
 #include "SaintVenantSetWaterHeight.h"
 #include "EquationOfState.h"
 
+/** Set the water height at the boundary **/
+
 template<>
 InputParameters validParams<SaintVenantSetWaterHeight>()
 {
@@ -24,14 +26,12 @@ SaintVenantSetWaterHeight::SaintVenantSetWaterHeight(const std::string & name, I
     // Equation name
     _equ_type("continuity, x_mom, y_mom, invalid", getParam<std::string>("equation_name")),
     // Coupled variables
-    _h(coupledValue("h")),
     _hu(coupledValue("hu")),
     // Constants and parameters
     _h_bc(getParam<Real>("h_bc")),
     // Equation of state:
     _eos(getUserObject<EquationOfState>("eos")),
     // Integer for jacobian terms
-    _h_var(coupled("h")),
     _hu_var(coupled("hu"))
 {
   if (_mesh.dimension() == 2)
@@ -49,7 +49,7 @@ SaintVenantSetWaterHeight::computeQpResidual()
       return hU*_normals[_qp]*_test[_i][_qp];
       break;
     case x_mom:
-      return (_u[_qp]*_u[_qp]/_h_bc*+p)*_normals[_qp](0)*_test[_i][_qp];
+      return (_u[_qp]*_u[_qp]/_h_bc+p)*_normals[_qp](0)*_test[_i][_qp];
       break;
     default:
       mooseError("'" << this->name() << "' Invalid equation name.");

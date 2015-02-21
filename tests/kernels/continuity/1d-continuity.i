@@ -38,7 +38,7 @@
   [../]
 
   [./Mass]
-    type = SvMass
+    type = WaterHeightEqu
     variable = h
     hu = hu
   [../]
