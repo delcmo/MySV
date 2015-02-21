@@ -9,7 +9,9 @@
 #include "SvDissipativeFlux.h"
 
 // bcs
-//#include "SaintVenantSetDensity.h"
+#include "SaintVenantSetWaterHeight.h"
+#include "SaintVenantSetWaterVelocity.h"
+#include "SaintVenantWallBC.h"
 
 // eos
 #include "EquationOfState.h"
@@ -58,6 +60,11 @@ MysvApp::registerObjects(Factory & factory)
   registerKernel(WaterHeightEqu);
   registerKernel(MomentumEqu);
   registerKernel(SvDissipativeFlux);
+
+  // bcs
+  registerBoundaryCondition(SaintVenantSetWaterHeight);
+  registerBoundaryCondition(SaintVenantSetWaterVelocity);
+  registerBoundaryCondition(SaintVenantWallBC);
 
   // eos
   registerUserObject(EquationOfState);

@@ -1,5 +1,5 @@
-#ifndef SAINTVENANSETWATERHEIGHT_H
-#define SAINTVENANSETWATERHEIGHT_H
+#ifndef SAINTVENANTSETWATERHEIGHT_H
+#define SAINTVENANTSETWATERHEIGHT_H
 
 #include "IntegratedBC.h"
 #include "Function.h"
@@ -29,8 +29,7 @@ protected:
   enum EquationType
   {
     continuity = 0,
-    x_mom = 1,
-    y_mom = 2
+    x_mom = 1
   };
   MooseEnum _equ_type;
 
@@ -47,5 +46,5 @@ protected:
   unsigned _hu_var;
 };
 
-#endif // SAINTVENANSETWATERHEIGHT_H
+#endif // SAINTVENANTSETWATERHEIGHT_H
 
