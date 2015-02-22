@@ -24,7 +24,7 @@ InputParameters validParams<SaintVenantSetWaterHeight>()
 SaintVenantSetWaterHeight::SaintVenantSetWaterHeight(const std::string & name, InputParameters parameters) :
     IntegratedBC(name, parameters),
     // Equation name
-    _equ_type("continuity, x_mom, y_mom, invalid", getParam<std::string>("equation_name")),
+    _equ_type("continuity x_mom invalid", getParam<std::string>("equ_name")),
     // Coupled variables
     _hu(coupledValue("hu")),
     // Constants and parameters

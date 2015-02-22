@@ -1,0 +1,7 @@
+[Tests]
+  [./1d-dirichlet-continuity]
+    type = 'Exodiff'
+    input = '1d-dirichlet-continuity.i'
+    exodiff = '1d-dirichlet-continuity_out.e'
+  [../]
+[]
