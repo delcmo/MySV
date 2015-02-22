@@ -9,7 +9,7 @@ InputParameters validParams<MomentumEqu>()
 
   // Coupled variables
   params.addRequiredCoupledVar("h", "water height");
-  params.addRequiredCoupledVar("hu", "x component of h*\vec{u}");
+  params.addRequiredCoupledVar("hu", "x component of h*vec{u}");
   params.addCoupledVar("hv", "y component of h*\vec{u}");
   // Constants and parameters
   params.addRequiredParam<Real>("gravity", "gravity");
@@ -17,7 +17,7 @@ InputParameters validParams<MomentumEqu>()
   // Equation of state
   params.addRequiredParam<UserObjectName>("eos", "Equation of state");
   // Function
-  params.addParam<FunctionName>("topology", " ", "The function to use for the topology");
+  params.addParam<FunctionName>("topology", "none", "The function to use for the topology");
 
   return params;
 }
@@ -51,7 +51,7 @@ MomentumEqu::computeQpResidual()
   // Pressure
   Real p = _eos.pressure(_h[_qp], hU)*_grad_test[_i][_qp](_component);
 
-  // Topography
+  // Topology
   RealVectorValue tplg_grad = _g*_h[_qp]*_b.gradient(_t, _q_point[_qp])*_test[_i][_qp];
 
   // return value

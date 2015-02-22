@@ -15,6 +15,7 @@
 
 // eos
 #include "EquationOfState.h"
+#include "HydrostaticPressure.h"
 
 // materials
 #include "EntropyViscosityCoefficient.h"
@@ -68,6 +69,7 @@ MysvApp::registerObjects(Factory & factory)
 
   // eos
   registerUserObject(EquationOfState);
+  registerUserObject(HydrostaticPressure);
 
   // Materials
   registerMaterial(EntropyViscosityCoefficient);

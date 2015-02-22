@@ -5,11 +5,6 @@ template<>
 InputParameters validParams<EquationOfState>()
 {
   InputParameters params = validParams<UserObject>();
-
-  params.addPrivateParam<MultiMooseEnum>("execute_on");
-  params.addPrivateParam<bool>("use_displaced_mesh");
-  params.registerBase("EquationOfState");
-
   return params;
 }
 
