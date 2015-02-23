@@ -6,7 +6,7 @@
 // kernels
 #include "WaterHeightEqu.h"
 #include "MomentumEqu.h"
-#include "SvDissipativeFlux.h"
+#include "ArtificialDissipativeFlux.h"
 
 // bcs
 #include "SaintVenantSetWaterHeight.h"
@@ -60,7 +60,7 @@ MysvApp::registerObjects(Factory & factory)
   // kernels
   registerKernel(WaterHeightEqu);
   registerKernel(MomentumEqu);
-  registerKernel(SvDissipativeFlux);
+  registerKernel(ArtificialDissipativeFlux);
 
   // bcs
   registerBoundaryCondition(SaintVenantSetWaterHeight);

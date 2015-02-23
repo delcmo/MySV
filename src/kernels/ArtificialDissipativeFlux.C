@@ -12,12 +12,12 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#include "SvDissipativeFlux.h"
+#include "ArtificialDissipativeFlux.h"
 /**
-This function computes the dissipative terms for all of the equations. It is dimension agnostic.
+This function computes the dissipative terms for all of the equations.
  */
 template<>
-InputParameters validParams<SvDissipativeFlux>()
+InputParameters validParams<ArtificialDissipativeFlux>()
 {
   InputParameters params = validParams<Kernel>();
 
@@ -27,7 +27,7 @@ InputParameters validParams<SvDissipativeFlux>()
   return params;
 }
 
-SvDissipativeFlux::SvDissipativeFlux(const std::string & name,
+ArtificialDissipativeFlux::ArtificialDissipativeFlux(const std::string & name,
                        InputParameters parameters) :
   Kernel(name, parameters),
     // Equation name
@@ -36,7 +36,7 @@ SvDissipativeFlux::SvDissipativeFlux(const std::string & name,
     _kappa(getMaterialProperty<Real>("kappa"))
 {}
 
-Real SvDissipativeFlux::computeQpResidual()
+Real ArtificialDissipativeFlux::computeQpResidual()
 {
   if (_mesh.isBoundaryNode(_current_elem->node(_i))==true)
   {
@@ -59,12 +59,12 @@ Real SvDissipativeFlux::computeQpResidual()
     return 0.;
 }
 
-Real SvDissipativeFlux::computeQpJacobian()
+Real ArtificialDissipativeFlux::computeQpJacobian()
 {
   return _kappa[_qp]*_grad_phi[_j][_qp]*_grad_test[_i][_qp];
 }
 
-Real SvDissipativeFlux::computeQpOffDiagJacobian( unsigned int _jvar)
+Real ArtificialDissipativeFlux::computeQpOffDiagJacobian( unsigned int _jvar)
 {
   return 0.;
 }

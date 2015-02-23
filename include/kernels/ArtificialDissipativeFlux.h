@@ -12,22 +12,22 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef SVDISSIPATIVEFLUX_H
-#define SVDISSIPATIVEFLUX_H
+#ifndef ARTIFICIALDISSIPATIVEFLUX_H
+#define ARTIFICIALDISSIPATIVEFLUX_H
 
 #include "Kernel.h"
 
 // Forward Declarations
-class SvDissipativeFlux;
+class ArtificialDissipativeFlux;
 
 template<>
-InputParameters validParams<SvDissipativeFlux>();
+InputParameters validParams<ArtificialDissipativeFlux>();
 
-class SvDissipativeFlux : public Kernel
+class ArtificialDissipativeFlux : public Kernel
 {
 public:
 
-  SvDissipativeFlux(const std::string & name,
+  ArtificialDissipativeFlux(const std::string & name,
              InputParameters parameters);
 
 protected:
@@ -53,4 +53,4 @@ private:
   MaterialProperty<Real> & _kappa;
 };
 
-#endif // SVDISSIPATIVEFLUX_H
+#endif // ARTIFICIALDISSIPATIVEFLUX_H

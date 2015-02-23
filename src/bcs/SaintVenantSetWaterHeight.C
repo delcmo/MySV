@@ -11,7 +11,7 @@ InputParameters validParams<SaintVenantSetWaterHeight>()
   // Equation name:
   params.addParam<std::string>("equ_name", "invalid", "Name of the equation.");
   // Coupled variables
-  params.addRequiredCoupledVar("hu", "x component of h*\vec{u}");
+  params.addRequiredCoupledVar("hu", "x component of h*vec{u}");
   // Constants and parameters
   params.addRequiredParam<Real>("h_bc", "boundary value of the density/water high h");
   // Equation of state
