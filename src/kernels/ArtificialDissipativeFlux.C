@@ -31,32 +31,27 @@ ArtificialDissipativeFlux::ArtificialDissipativeFlux(const std::string & name,
                        InputParameters parameters) :
   Kernel(name, parameters),
     // Equation name
-    _equ_type("continuity, x_mom, y_mom, invalid", getParam<std::string>("equation_name")),
+    _equ_type("continuity x_mom y_mom invalid", getParam<std::string>("equ_name")),
     // Material
     _kappa(getMaterialProperty<Real>("kappa"))
 {}
 
 Real ArtificialDissipativeFlux::computeQpResidual()
 {
-  if (_mesh.isBoundaryNode(_current_elem->node(_i))==true)
+  switch (_equ_type)
   {
-    switch (_equ_type)
-    {
-      case continuity:
-      return _kappa[_qp]*_grad_u[_qp]*_grad_test[_i][_qp];
-      break;
-    case x_mom:
-      return _kappa[_qp]*_grad_u[_qp]*_grad_test[_i][_qp];
-      break;
-    case y_mom:
-      return _kappa[_qp]*_grad_u[_qp]*_grad_test[_i][_qp];
-      break;
-    default:
-      mooseError("Invalid equation name.");
-    }
+    case continuity:
+    return _kappa[_qp]*_grad_u[_qp]*_grad_test[_i][_qp];
+    break;
+  case x_mom:
+    return _kappa[_qp]*_grad_u[_qp]*_grad_test[_i][_qp];
+    break;
+  case y_mom:
+    return _kappa[_qp]*_grad_u[_qp]*_grad_test[_i][_qp];
+    break;
+  default:
+    mooseError("Invalid equation name.");
   }
-  else
-    return 0.;
 }
 
 Real ArtificialDissipativeFlux::computeQpJacobian()

@@ -8,6 +8,9 @@
 #include "MomentumEqu.h"
 #include "ArtificialDissipativeFlux.h"
 
+// auxkernels
+#include "Xvelocity.h"
+
 // bcs
 #include "SaintVenantSetWaterHeight.h"
 #include "SaintVenantSetWaterVelocity.h"
@@ -19,6 +22,9 @@
 
 // materials
 #include "EntropyViscosityCoefficient.h"
+
+// functions
+#include "VariableDepthRiverbed.h"
 
 template<>
 InputParameters validParams<MysvApp>()
@@ -62,6 +68,9 @@ MysvApp::registerObjects(Factory & factory)
   registerKernel(MomentumEqu);
   registerKernel(ArtificialDissipativeFlux);
 
+  // auxkernels
+  registerAux(Xvelocity);
+  
   // bcs
   registerBoundaryCondition(SaintVenantSetWaterHeight);
   registerBoundaryCondition(SaintVenantSetWaterVelocity);
@@ -71,8 +80,11 @@ MysvApp::registerObjects(Factory & factory)
   registerUserObject(EquationOfState);
   registerUserObject(HydrostaticPressure);
 
-  // Materials
+  // materials
   registerMaterial(EntropyViscosityCoefficient);
+
+  // functions
+  registerFunction(VariableDepthRiverbed);
 }
 
 void

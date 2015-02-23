@@ -2,7 +2,6 @@
 #define MOMENTUMEQU_H
 
 #include "Kernel.h"
-#include "Function.h"
 #include "EquationOfState.h"
 
 //Forward Declarations
@@ -26,10 +25,10 @@ protected:
   VariableValue & _hu;
   VariableValue & _hv;
 
+  VariableGradient & _b_grad;
+
   Real _g;
   unsigned int _component;
-
-  Function & _b;
 
   const EquationOfState & _eos;
 

@@ -11,6 +11,8 @@ InputParameters validParams<MomentumEqu>()
   params.addRequiredCoupledVar("h", "water height");
   params.addRequiredCoupledVar("hu", "x component of h*vec{u}");
   params.addCoupledVar("hv", "y component of h*vec{u}");
+  // Coupled aux variables
+  params.addCoupledVar("b", "topology");
   // Constants and parameters
   params.addRequiredParam<Real>("gravity", "gravity");
   params.addRequiredParam<unsigned int>("component", "number of component (0 = x, 1 = y)");
@@ -28,11 +30,11 @@ MomentumEqu::MomentumEqu(const std::string & name, InputParameters parameters)
     _h(coupledValue("h")),
     _hu(coupledValue("hu")),
     _hv(_mesh.dimension() == 2 ? coupledValue("hv") : _zero),
+    // Coupled aux variables
+    _b_grad(isCoupled("b") ? coupledGradient("b") : _grad_zero),
     // Constants and parameters
     _g(getParam<Real>("gravity")),
     _component(getParam<unsigned int>("component")),
-    // Function
-    _b(getFunction("topology")),
     // Equation of state:
     _eos(getUserObject<EquationOfState>("eos")),
     // Integer for jacobian terms
@@ -52,7 +54,7 @@ MomentumEqu::computeQpResidual()
   Real advc = _u[_qp]/_h[_qp]*(hU*_grad_test[_i][_qp]);
 
   // Topology
-  RealVectorValue tplg_grad = _g*_h[_qp]*_b.gradient(_t, _q_point[_qp])*_test[_i][_qp];
+  RealVectorValue tplg_grad = _g*_h[_qp]*_b_grad[_qp]*_test[_i][_qp];
 
   // return value
   return -advc-p+tplg_grad(_component);
@@ -97,7 +99,7 @@ MomentumEqu::computeQpOffDiagJacobian(unsigned int jvar)
     dadvcdh *= _phi[_j][_qp];
 
     // Topology
-    RealVectorValue dtplg_grad_dh = _phi[_j][_qp]*_g*_b.gradient(_t, _q_point[_qp])*_test[_i][_qp];
+    RealVectorValue dtplg_grad_dh = _phi[_j][_qp]*_g*_b_grad[_qp]*_test[_i][_qp];
 
     // return value
     return -dadvcdh-dpdh+dtplg_grad_dh(_component);

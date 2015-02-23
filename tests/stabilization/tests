@@ -1,0 +1,7 @@
+[Tests]
+  [./1d-dam-break-pb]
+    type = 'Exodiff'
+    input = '1d-dam-break-pb.i'
+    exodiff = '1d-dam-break-pb_out.e'
+  [../]
+[]

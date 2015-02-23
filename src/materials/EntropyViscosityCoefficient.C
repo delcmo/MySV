@@ -50,6 +50,6 @@ EntropyViscosityCoefficient::computeQpProperties()
   Real c2 = _eos.c2(_h[_qp], hU);
 
   // Set material viscosity coefficient
-  _kappa_max[_qp] = 0.5*h_cell*(hU.size()+std::sqrt(c2));
+  _kappa_max[_qp] = 0.5*h_cell*(hU.size()/_h[_qp]+std::sqrt(c2));
   _kappa[_qp] = _kappa_max[_qp];
 }
