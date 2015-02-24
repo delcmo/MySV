@@ -141,6 +141,6 @@ MomentumEqu::computeQpOffDiagJacobian(unsigned int jvar)
     return -dadvcdhv-dpdhv+dtplg_grad_dhv(_component);
   }
   else
-    mooseError("'" << this->name() << "': wrong variable index in jacobian terms.");
+    return 0.;
     
 }

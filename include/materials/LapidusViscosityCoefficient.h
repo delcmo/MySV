@@ -26,8 +26,7 @@ protected:
   VariableValue & _hu;
 
   // Coupled gradient
-  VariableGradient & _h_grad;
-  VariableGradient & _hu_grad;
+  VariableGradient & _vel_grad;
 
   // Lapidus parameter
   Real _Ce;

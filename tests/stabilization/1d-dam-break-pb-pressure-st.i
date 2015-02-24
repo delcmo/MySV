@@ -1,7 +1,7 @@
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 200
+  nx = 100
 []
 
 [Functions]
@@ -36,6 +36,15 @@
   [../]
 
   [./hu]
+    family = LAGRANGE
+    order = FIRST  
+    [./InitialCondition]
+      type = ConstantIC
+      value = 0.
+    [../]
+  [../]
+  
+  [./p_laplace]
     family = LAGRANGE
     order = FIRST  
     [./InitialCondition]
@@ -83,10 +92,26 @@
     variable = hu
     equ_name = x_mom
   [../]
+  
+  [./PressMassMatrix]
+    type = PressureBasedViscosityMassMatrix
+    variable = p_laplace
+  [../]
+  
+  [./PressLaplace]
+    type = PressureBasedViscosityLaplace
+    variable = p_laplace
+    pressure = p_aux
+  [../]
 []
 
 [AuxVariables]
   [./u_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+  
+  [./p_aux]
     family = LAGRANGE
     order = FIRST
   [../]
@@ -109,6 +134,14 @@
     h = h
     hu = hu
   [../]
+  
+  [./p_ak]
+    type = PressureSw
+    variable = p_aux
+    h = h
+    hu = hu
+    eos = hydro
+  [../]
 
   [./kappa_ak]
     type = MaterialRealAux
@@ -125,13 +158,16 @@
 
 [Materials]
   [./LapidusViscosityCoeff]
-    type = LapidusViscosityCoefficient
+    type = PressureBasedViscosityCoefficient
     block = 0
     h = h
     hu = hu
-    u = u_aux
+    norm_velocity = u_aux
+    press_laplace = p_laplace
+    pressure = p_aux
+    pressure_based_visc_type = ST
     eos = hydro
-    Ce = 5.
+    Ce = 1.
   [../]
 []
 
@@ -177,7 +213,7 @@
   type = Transient
   scheme = bdf2
 
-  dt = 1.e-4
+  dt = 5.e-5
 
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-6

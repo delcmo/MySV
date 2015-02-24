@@ -11,39 +11,29 @@
 /*                                                              */
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
-/**
-This function computes the density of the fluid.
-**/
-#include "PressureSw.h"
+
+#include "PressureBasedViscosityMassMatrix.h"
 
 template<>
-InputParameters validParams<PressureSw>()
+InputParameters validParams<PressureBasedViscosityMassMatrix>()
 {
-  InputParameters params = validParams<AuxKernel>();
-  
-  // Coupled variables
-  params.addRequiredCoupledVar("h", "water height");
-  params.addRequiredCoupledVar("hu", "x component of h*vec{u}");
-  params.addCoupledVar("hv", "y component of h*vec{u}");
-  // Equation of state
-  params.addRequiredParam<UserObjectName>("eos", "Equation of state");
-
+  InputParameters params = validParams<TimeDerivative>();
   return params;
 }
 
-PressureSw::PressureSw(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
-    // Coupled variables
-    _h(coupledValue("h")),
-    _hu(coupledValue("hu")),
-    _hv(_mesh.dimension() == 2 ? coupledValue("hv") : _zero),
-    // Equation of state:
-    _eos(getUserObject<EquationOfState>("eos"))
+PressureBasedViscosityMassMatrix::PressureBasedViscosityMassMatrix(const std::string & name,
+                                             InputParameters parameters) :
+    TimeDerivative(name,parameters)
 {}
 
 Real
-PressureSw::computeValue()
+PressureBasedViscosityMassMatrix::computeQpResidual()
 {
-  RealVectorValue hU(_hu[_qp], _hv[_qp], 0.);
-  return _eos.pressure(_h[_qp], hU);
+    return _u[_qp] * _test[_i][_qp];
+}
+
+Real
+PressureBasedViscosityMassMatrix::computeQpJacobian()
+{
+    return _test[_j][_qp] * _test[_i][_qp];
 }

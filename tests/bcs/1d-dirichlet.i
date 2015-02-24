@@ -20,6 +20,8 @@
 
 [Variables]
   [./h]
+  family = LAGRANGE
+  order = first
     [./InitialCondition]
       type = ConstantIC
       value = 4.
@@ -27,6 +29,8 @@
   [../]
 
   [./hu]
+    family = LAGRANGE
+    order = first  
     [./InitialCondition]
     type = ConstantIC
     value = 2.

@@ -22,6 +22,8 @@
 
 [Variables]
   [./h]
+  family = LAGRANGE
+  order = first
   [./InitialCondition]
     type = FunctionIC
     function = ic_func
@@ -31,6 +33,8 @@
 
 [AuxVariables]
   [./hu]
+  family = LAGRANGE
+  order = first
   [./InitialCondition]
     type = ConstantIC
     value = 2.

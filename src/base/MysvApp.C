@@ -7,6 +7,8 @@
 #include "WaterHeightEqu.h"
 #include "MomentumEqu.h"
 #include "ArtificialDissipativeFlux.h"
+#include "PressureBasedViscosityMassMatrix.h"
+#include "PressureBasedViscosityLaplace.h"
 
 // auxkernels
 #include "Xvelocity.h"
@@ -24,6 +26,7 @@
 // materials
 #include "EntropyViscosityCoefficient.h"
 #include "LapidusViscosityCoefficient.h"
+#include "PressureBasedViscosityCoefficient.h"
 
 // functions
 #include "VariableDepthRiverbed.h"
@@ -69,6 +72,8 @@ MysvApp::registerObjects(Factory & factory)
   registerKernel(WaterHeightEqu);
   registerKernel(MomentumEqu);
   registerKernel(ArtificialDissipativeFlux);
+  registerKernel(PressureBasedViscosityMassMatrix);
+  registerKernel(PressureBasedViscosityLaplace);
 
   // auxkernels
   registerAux(Xvelocity);
@@ -86,6 +91,7 @@ MysvApp::registerObjects(Factory & factory)
   // materials
   registerMaterial(EntropyViscosityCoefficient);
   registerMaterial(LapidusViscosityCoefficient);
+  registerMaterial(PressureBasedViscosityCoefficient);
 
   // functions
   registerFunction(VariableDepthRiverbed);
