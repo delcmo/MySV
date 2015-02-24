@@ -10,6 +10,7 @@
 
 // auxkernels
 #include "Xvelocity.h"
+#include "PressureSw.h"
 
 // bcs
 #include "SaintVenantSetWaterHeight.h"
@@ -22,6 +23,7 @@
 
 // materials
 #include "EntropyViscosityCoefficient.h"
+#include "LapidusViscosityCoefficient.h"
 
 // functions
 #include "VariableDepthRiverbed.h"
@@ -70,6 +72,7 @@ MysvApp::registerObjects(Factory & factory)
 
   // auxkernels
   registerAux(Xvelocity);
+  registerAux(PressureSw);
   
   // bcs
   registerBoundaryCondition(SaintVenantSetWaterHeight);
@@ -82,6 +85,7 @@ MysvApp::registerObjects(Factory & factory)
 
   // materials
   registerMaterial(EntropyViscosityCoefficient);
+  registerMaterial(LapidusViscosityCoefficient);
 
   // functions
   registerFunction(VariableDepthRiverbed);
