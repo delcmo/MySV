@@ -137,7 +137,7 @@
 
 [BCs]
   [./left_h]
-    type = SaintVenantWallBC
+    type = SolidWallBC
     variable = h
     equ_name = continuity
     h = h
@@ -147,7 +147,7 @@
   [../]
 
   [./right_h]
-    type = SaintVenantWallBC
+    type = SolidWallBC
     variable = h
     equ_name = continuity
     h = h
@@ -157,7 +157,7 @@
   [../]
 
   [./left_hu]
-    type = SaintVenantWallBC
+    type = SolidWallBC
     variable = hu
     equ_name = x_mom
     h = h
@@ -167,7 +167,7 @@
   [../]
 
   [./right_hu]
-    type = SaintVenantWallBC
+    type = SolidWallBC
     variable = hu
     equ_name = x_mom    
     h = h

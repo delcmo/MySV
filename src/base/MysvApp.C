@@ -20,7 +20,7 @@
 // bcs
 #include "SaintVenantSetWaterHeight.h"
 #include "SaintVenantSetWaterVelocity.h"
-#include "SaintVenantWallBC.h"
+#include "SolidWallBC.h"
 
 // eos
 #include "EquationOfState.h"
@@ -88,7 +88,7 @@ MysvApp::registerObjects(Factory & factory)
   // bcs
   registerBoundaryCondition(SaintVenantSetWaterHeight);
   registerBoundaryCondition(SaintVenantSetWaterVelocity);
-  registerBoundaryCondition(SaintVenantWallBC);
+  registerBoundaryCondition(SolidWallBC);
 
   // eos
   registerUserObject(EquationOfState);
