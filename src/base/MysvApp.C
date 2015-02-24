@@ -13,6 +13,7 @@
 // auxkernels
 #include "Xvelocity.h"
 #include "PressureSw.h"
+#include "EnergySw.h"
 
 // ics
 #include "StepIC.h"
@@ -81,6 +82,7 @@ MysvApp::registerObjects(Factory & factory)
   // auxkernels
   registerAux(Xvelocity);
   registerAux(PressureSw);
+  registerAux(EnergySw);
 
   // ics
   registerInitialCondition(StepIC);

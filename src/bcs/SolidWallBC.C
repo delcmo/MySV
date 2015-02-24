@@ -1,7 +1,7 @@
 #include "SolidWallBC.h"
 #include "EquationOfState.h"
 
-/** Set the fluid velocity at the boundary **/
+/** Wall boundary condition: the normal velocity is assumed to be zero. **/
 
 template<>
 InputParameters validParams<SolidWallBC>()
