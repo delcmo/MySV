@@ -7,8 +7,8 @@ InputParameters validParams<WaterHeightEqu>()
 {
   InputParameters params = validParams<Kernel>();
 
-  params.addRequiredCoupledVar("hu", "x component of h*\vec{u}");
-  params.addCoupledVar("hv", "y component of h*\vec{u}");
+  params.addRequiredCoupledVar("hu", "x component of h*vec{u}");
+  params.addCoupledVar("hv", "y component of h*vec{u}");
 
   return params;
 }

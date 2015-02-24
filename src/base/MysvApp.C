@@ -14,6 +14,9 @@
 #include "Xvelocity.h"
 #include "PressureSw.h"
 
+// ics
+#include "StepIC.h"
+
 // bcs
 #include "SaintVenantSetWaterHeight.h"
 #include "SaintVenantSetWaterVelocity.h"
@@ -78,7 +81,10 @@ MysvApp::registerObjects(Factory & factory)
   // auxkernels
   registerAux(Xvelocity);
   registerAux(PressureSw);
-  
+
+  // ics
+  registerInitialCondition(StepIC);
+
   // bcs
   registerBoundaryCondition(SaintVenantSetWaterHeight);
   registerBoundaryCondition(SaintVenantSetWaterVelocity);
