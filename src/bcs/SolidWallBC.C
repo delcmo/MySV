@@ -47,6 +47,8 @@ SolidWallBC::computeQpResidual()
       break;
     case x_mom:
       return p*_normals[_qp](0)*_test[_i][_qp];
+    case y_mom:
+      return p*_normals[_qp](1)*_test[_i][_qp];
       break;
     default:
       mooseError("'" << this->name() << "' Invalid equation name.");
@@ -66,7 +68,7 @@ SolidWallBC::computeQpJacobian()
       return _eos.dp_dhu(_h[_qp], hU)*_normals[_qp](0)*_test[_i][_qp];
       break;
     case y_mom:
-      return _eos.dp_dhv(_h[_qp], hU)*_normals[_qp](0)*_test[_i][_qp];
+      return _eos.dp_dhv(_h[_qp], hU)*_normals[_qp](1)*_test[_i][_qp];
       break;
     default:
       mooseError("'" << this->name() << "' Invalid equation name.");
@@ -82,7 +84,7 @@ SolidWallBC::computeQpOffDiagJacobian(unsigned jvar)
     switch (_equ_type)
     {
       case y_mom:
-        return _eos.dp_dhu(_h[_qp], hU)*_normals[_qp](0)*_test[_i][_qp];
+        return _eos.dp_dhu(_h[_qp], hU)*_normals[_qp](1)*_test[_i][_qp];
         break;
       default:
         return 0.;
