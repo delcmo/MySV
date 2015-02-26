@@ -1,24 +1,24 @@
-#ifndef SAINTVENANTSETWATERHEIGHT_H
-#define SAINTVENANTSETWATERHEIGHT_H
+#ifndef SAINTVENANTSETWATERHEIGHTOUTLETBC_H
+#define SAINTVENANTSETWATERHEIGHTOUTLETBC_H
 
 #include "IntegratedBC.h"
 #include "Function.h"
 
 // Forward Declarations
-class SaintVenantSetWaterHeight;
+class SaintVenantSetWaterHeightOutletBC;
 class EquationOfState;
 
 template<>
-InputParameters validParams<SaintVenantSetWaterHeight>();
+InputParameters validParams<SaintVenantSetWaterHeightOutletBC>();
 
 
 /**
 **/
-class SaintVenantSetWaterHeight : public IntegratedBC
+class SaintVenantSetWaterHeightOutletBC : public IntegratedBC
 {
 public:
-  SaintVenantSetWaterHeight(const std::string & name, InputParameters parameters);
-  virtual ~SaintVenantSetWaterHeight(){}
+  SaintVenantSetWaterHeightOutletBC(const std::string & name, InputParameters parameters);
+  virtual ~SaintVenantSetWaterHeightOutletBC(){}
 
 protected:
   virtual Real computeQpResidual();
@@ -34,6 +34,7 @@ protected:
   MooseEnum _equ_type;
 
   // Coupled variables
+  VariableValue & _h;  
   VariableValue & _hu;
 
   // Constants and parameters
@@ -46,5 +47,5 @@ protected:
   unsigned _hu_var;
 };
 
-#endif // SAINTVENANTSETWATERHEIGHT_H
+#endif // SAINTVENANTSETWATERHEIGHTOUTLETBC_H
 

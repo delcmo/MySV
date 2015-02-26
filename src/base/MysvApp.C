@@ -19,7 +19,8 @@
 #include "StepIC.h"
 
 // bcs
-#include "SaintVenantSetWaterHeight.h"
+#include "SaintVenantSetWaterHeightInletBC.h"
+#include "SaintVenantSetWaterHeightOutletBC.h"
 #include "SaintVenantSetWaterVelocity.h"
 #include "SolidWallBC.h"
 
@@ -88,7 +89,8 @@ MysvApp::registerObjects(Factory & factory)
   registerInitialCondition(StepIC);
 
   // bcs
-  registerBoundaryCondition(SaintVenantSetWaterHeight);
+  registerBoundaryCondition(SaintVenantSetWaterHeightInletBC);
+  registerBoundaryCondition(SaintVenantSetWaterHeightOutletBC);
   registerBoundaryCondition(SaintVenantSetWaterVelocity);
   registerBoundaryCondition(SolidWallBC);
 

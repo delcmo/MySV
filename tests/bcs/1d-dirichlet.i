@@ -64,7 +64,7 @@
 
 [BCs]
   [./left_h]
-    type = SaintVenantSetWaterHeight
+    type = SaintVenantSetWaterHeightInletBC
     variable = h
     boundary = left
     equ_name = continuity
@@ -74,7 +74,7 @@
   [../]
 
   [./right_h]
-    type = SaintVenantSetWaterHeight
+    type = SaintVenantSetWaterHeightInletBC
     variable = h
     boundary = right
     equ_name = continuity
