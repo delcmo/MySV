@@ -21,6 +21,7 @@
 // bcs
 #include "SaintVenantSetWaterHeightInletBC.h"
 #include "SaintVenantSetWaterHeightOutletBC.h"
+#include "SaintVenantSetWaterVelocityInletBC.h"
 #include "SaintVenantSetWaterVelocity.h"
 #include "SolidWallBC.h"
 
@@ -91,6 +92,7 @@ MysvApp::registerObjects(Factory & factory)
   // bcs
   registerBoundaryCondition(SaintVenantSetWaterHeightInletBC);
   registerBoundaryCondition(SaintVenantSetWaterHeightOutletBC);
+  registerBoundaryCondition(SaintVenantSetWaterVelocityInletBC);
   registerBoundaryCondition(SaintVenantSetWaterVelocity);
   registerBoundaryCondition(SolidWallBC);
 
