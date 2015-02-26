@@ -22,7 +22,6 @@ InputParameters validParams<SaintVenantSetWaterHeightOutletBC>()
   return params;
 }
 
-
 SaintVenantSetWaterHeightOutletBC::SaintVenantSetWaterHeightOutletBC(const std::string & name, InputParameters parameters) :
     IntegratedBC(name, parameters),
     // Equation name
@@ -35,6 +34,7 @@ SaintVenantSetWaterHeightOutletBC::SaintVenantSetWaterHeightOutletBC(const std::
     // Equation of state:
     _eos(getUserObject<EquationOfState>("eos")),
     // Integer for jacobian terms
+    _h_var(coupled("h")),
     _hu_var(coupled("hu"))
 {
   // Assert mesh dimension
@@ -54,10 +54,10 @@ SaintVenantSetWaterHeightOutletBC::computeQpResidual()
   RealVectorValue hU(_hu[_qp], 0., 0.);
   Real c2 = _eos.c2(_h[_qp], hU);
   Real Mach = std::fabs(vel)/std::sqrt(c2);
+
+  // Compute bc pressure and water height
   Real p_bc = _eos.pressure(_h_bc, hU);
   Real h_bc = _h_bc;
-
-  // If the fluid is supersonic
   if (Mach>1)
   {
     p_bc = _eos.pressure(_h[_qp], hU);
@@ -81,12 +81,63 @@ SaintVenantSetWaterHeightOutletBC::computeQpResidual()
 Real
 SaintVenantSetWaterHeightOutletBC::computeQpJacobian()
 {
-  return 0.;
+  // Current bc values of the momentum, sound speed and pressure
+  RealVectorValue hU(_hu[_qp], 0., 0.);
+  Real vel = _hu[_qp]/_h[_qp];  
+  Real c2 = _eos.c2(_h[_qp], hU);
+  Real Mach = std::fabs(vel)/std::sqrt(c2);
+  Real h_bc = _h_bc;
+  if (Mach>1)
+    h_bc = _h[_qp];
+
+  // Return the value of the bc flux for each equation
+  switch (_equ_type)
+  {
+    case x_mom:
+      return _phi[_j][_qp]*(2.*_u[_qp]/h_bc+_eos.dp_dhu(h_bc, hU))*_normals[_qp](0)*_test[_i][_qp];
+      break;
+    default:
+      return 0.;
+  }
 }
 
 Real
 SaintVenantSetWaterHeightOutletBC::computeQpOffDiagJacobian(unsigned jvar)
 {
-  return 0.;
+  // Current bc values of the momentum, sound speed and pressure
+  RealVectorValue hU(_hu[_qp], 0., 0.);
+  Real vel = _hu[_qp]/_h[_qp];
+  Real c2 = _eos.c2(_h[_qp], hU);
+  Real Mach = std::fabs(vel)/std::sqrt(c2);
+  Real h_bc = _h_bc;
+  if (Mach>1)
+    h_bc = _h[_qp];
+
+  if (jvar == _h_var && Mach>1)
+  {
+    switch (_equ_type)
+    {
+      case x_mom:
+        return _phi[_j][_qp]*(-_u[_qp]*_u[_qp]/(_h[_qp]*_h[_qp])+_eos.dp_dh(h_bc, hU))*_normals[_qp](0)*_test[_i][_qp];
+        break;
+      default:
+        return 0.;
+        break;
+    }
+  }
+  else if (jvar == _hu_var)
+  {
+    switch (_equ_type)
+    {
+      case continuity:
+        return _phi[_j][_qp]*_normals[_qp](0)*_test[_i][_qp];
+        break;
+      default:
+        return 0.;
+        break;
+    }
+  }
+  else
+    return 0.;
 }
 

@@ -44,6 +44,7 @@ protected:
   const EquationOfState & _eos;
 
   // Integers for jacobian terms
+  unsigned _h_var;  
   unsigned _hu_var;
 };
 
