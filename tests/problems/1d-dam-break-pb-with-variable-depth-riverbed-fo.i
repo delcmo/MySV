@@ -6,7 +6,7 @@
 
 [Functions]
   [./topology]
-    type = VariableDepthRiverbed
+    type = VariableDepthRiverbed1D
     xmin = 0.4
     xmax = 0.6
   [../]
