@@ -74,10 +74,11 @@
   [../]
 
   [./right_h]
-    type = SaintVenantSetWaterHeightInletBC
+    type = SaintVenantSetWaterHeightOutletBC
     variable = h
     boundary = right
     equ_name = continuity
+    h = h
     hu = hu
     h_bc = 4.
     eos = hydro
