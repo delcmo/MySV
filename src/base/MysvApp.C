@@ -35,7 +35,8 @@
 #include "PressureBasedViscosityCoefficient.h"
 
 // functions
-#include "VariableDepthRiverbed.h"
+#include "VariableDepthRiverbed1D.h"
+#include "VariableDepthRiverbed2D.h"
 
 template<>
 InputParameters validParams<MysvApp>()
@@ -106,7 +107,8 @@ MysvApp::registerObjects(Factory & factory)
   registerMaterial(PressureBasedViscosityCoefficient);
 
   // functions
-  registerFunction(VariableDepthRiverbed);
+  registerFunction(VariableDepthRiverbed1D);
+  registerFunction(VariableDepthRiverbed2D);
 }
 
 void

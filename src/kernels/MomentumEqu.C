@@ -18,8 +18,6 @@ InputParameters validParams<MomentumEqu>()
   params.addRequiredParam<unsigned int>("component", "number of component (0 = x, 1 = y)");
   // Equation of state
   params.addRequiredParam<UserObjectName>("eos", "Equation of state");
-  // Function
-  params.addParam<FunctionName>("topology", "none", "The function to use for the topology");
 
   return params;
 }
