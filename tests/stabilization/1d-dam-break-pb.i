@@ -86,6 +86,21 @@
 []
 
 [AuxVariables]
+  [./entropy_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  [./F_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  [./kappa_aux]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
+
   [./kappa_max_aux]
     family = MONOMIAL
     order = CONSTANT
@@ -93,6 +108,27 @@
 []
 
 [AuxKernels]
+  [./entropy_ak]
+    type = EnergySw
+    variable = entropy_aux
+    h = h
+    hu = hu
+  [../]
+
+  [./F_ak]
+    type = EnergyFluxSw
+    variable = F_aux
+    momentum = hu
+    h = h
+    hu = hu
+  [../]
+
+  [./kappa_ak]
+    type = MaterialRealAux
+    variable = kappa_aux
+    property = kappa
+  [../]
+
   [./kappa_max_ak]
     type = MaterialRealAux
     variable = kappa_max_aux
@@ -104,8 +140,11 @@
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
     block = 0
+    is_first_order = true
     h = h
     hu = hu
+    entropy = entropy_aux
+    F = F_aux
     eos = hydro
   [../]
 []

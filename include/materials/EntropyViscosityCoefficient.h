@@ -21,15 +21,25 @@ public:
 protected:
   virtual void computeQpProperties();
 
+  // Parameters
+  bool _is_first_order;
+
   // Coupled variables
   VariableValue & _h;
   VariableValue & _hu;
   VariableValue & _hv;
 
-  // Coupled gradient
-  VariableGradient & _h_grad;
-  VariableGradient & _hu_grad;
-  VariableGradient & _hv_grad;
+  // Coupled aux variables: entropy
+  VariableValue & _E;
+  VariableValue & _E_old;
+  VariableValue & _E_older;
+
+  // Coupled aux variables: entropy flux
+  VariableGradient & _F_grad;
+  VariableGradient & _G_grad;
+
+  // COupled aux variables: topology
+  VariableValue & _b;
 
   // Equation of state
   const EquationOfState & _eos;

@@ -90,7 +90,6 @@
   hv = hv  
   gravity = 9.8
   component = 0
-  topology = topology
   eos = hydro
   [../]
 
@@ -114,7 +113,6 @@
   hv = hv
   gravity = 9.8
   component = 1
-  topology = topology
   eos = hydro
   [../]
   
@@ -126,6 +124,26 @@
 []
 
 [AuxVariables]
+  [./entropy_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  [./F_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  [./G_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  [./kappa_aux]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
+
   [./kappa_max_aux]
     family = MONOMIAL
     order = CONSTANT
@@ -133,6 +151,38 @@
 []
 
 [AuxKernels]
+  [./entropy_ak]
+    type = EnergySw
+    variable = entropy_aux
+    h = h
+    hu = hu
+    hv = hv
+  [../]
+
+  [./F_ak]
+    type = EnergyFluxSw
+    variable = F_aux
+    momentum = hu
+    h = h
+    hu = hu
+    hv = hv
+  [../]
+
+  [./G_ak]
+    type = EnergyFluxSw
+    variable = G_aux
+    momentum = hv
+    h = h
+    hu = hu
+    hv = hv    
+  [../]
+
+  [./kappa_ak]
+    type = MaterialRealAux
+    variable = kappa_aux
+    property = kappa
+  [../]
+
   [./kappa_max_ak]
     type = MaterialRealAux
     variable = kappa_max_aux
@@ -144,9 +194,13 @@
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
     block = 0
+    is_first_order = true
     h = h
     hu = hu
-    hv = hv    
+    hv = hv
+    entropy = entropy_aux
+    F = F_aux
+    G = G_aux    
     eos = hydro
   [../]
 []

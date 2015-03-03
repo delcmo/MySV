@@ -14,6 +14,7 @@
 #include "Xvelocity.h"
 #include "PressureSw.h"
 #include "EnergySw.h"
+#include "EnergyFluxSw.h"
 
 // ics
 #include "StepIC.h"
@@ -86,6 +87,7 @@ MysvApp::registerObjects(Factory & factory)
   registerAux(Xvelocity);
   registerAux(PressureSw);
   registerAux(EnergySw);
+  registerAux(EnergyFluxSw);
 
   // ics
   registerInitialCondition(StepIC);
