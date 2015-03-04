@@ -23,6 +23,8 @@ protected:
 
   // Parameters
   bool _is_first_order;
+  Real _Ce;
+  Real _g;
 
   // Coupled variables
   VariableValue & _h;

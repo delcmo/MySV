@@ -7,6 +7,8 @@ InputParameters validParams<EntropyViscosityCoefficient>()
 
   // Parameters
   params.addParam<bool>("is_first_order", false, "if true, use the first-order viscosity coefficient");
+  params.addParam<Real>("Ce", 1., "coefficient for high-order viscosity coefficient");
+  params.addParam<Real>("gravity", 9.81, "gravity");
   // Coupled variables
   params.addRequiredCoupledVar("h", "high/density");
   params.addRequiredCoupledVar("hu", "x component of h*\vec{u}");
@@ -24,8 +26,10 @@ InputParameters validParams<EntropyViscosityCoefficient>()
 
 EntropyViscosityCoefficient::EntropyViscosityCoefficient(const std::string & name, InputParameters parameters) :
     Material(name, parameters),
-// Parameters
+    // Parameters
     _is_first_order(getParam<bool>("is_first_order")),
+    _Ce(getParam<Real>("Ce")),
+    _g(getParam<Real>("gravity")),
     // Coupled variables
     _h(coupledValue("h")),
     _hu(coupledValue("hu")),
@@ -74,11 +78,24 @@ EntropyViscosityCoefficient::computeQpProperties()
   Real residual = w0*_E[_qp]+w1*_E_old[_qp]+w2*_E_older[_qp];
   residual += _F_grad[_qp](0)+_G_grad[_qp](1);
 
+  // Froude number
+  Real Froude = hU.size()/_h[_qp]/std::sqrt(_g*(_h[_qp]+1.e-6));
+  
   // Normalization parameter
-  Real norm = _h[_qp]+_b[_qp];
+  Real norm = _g*(_h[_qp]+_b[_qp]+1.e-6);
 
   // High-order viscosity coefficient
-  _kappa[_qp] = _is_first_order ? h_cell*h_cell*std::fabs(residual/norm) : _kappa_max[_qp];
+  Real kappa = _t_step == 1 ? _kappa_max[_qp] : _Ce*h_cell*h_cell*std::fabs(residual/norm*Froude);
+//  if (_t_step>1) {
+//    std::cout<<kappa<<std::endl;
+//    std::cout<<"w0="<<w0<<std::endl;
+//    std::cout<<"w1="<<w1<<std::endl;
+//    std::cout<<"w2="<<w2<<std::endl;
+//    std::cout<<"E="<<_E[_qp]<<std::endl;
+//    std::cout<<"E_old="<<_E_old[_qp]<<std::endl;
+//    std::cout<<"E_older="<<_E_older[_qp]<<std::endl;
+//  }
 
   // Return value of the viscosity coefficient
+  _kappa[_qp] = _is_first_order ? _kappa_max[_qp] : std::min(kappa, _kappa_max[_qp]);
 }

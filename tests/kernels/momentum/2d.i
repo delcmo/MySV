@@ -194,7 +194,6 @@
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
     block = 0
-    is_first_order = true
     h = h
     hu = hu
     hv = hv
