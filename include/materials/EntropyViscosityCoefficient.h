@@ -49,6 +49,7 @@ protected:
   // material to compute
   MaterialProperty<Real> & _kappa;
   MaterialProperty<Real> & _kappa_max;
+  MaterialProperty<Real> & _residual;
 };
 
 #endif /* ENTROPYVISCOSITYCOEFFICIENT_H */

@@ -47,7 +47,8 @@ EntropyViscosityCoefficient::EntropyViscosityCoefficient(const std::string & nam
     _eos(getUserObject<EquationOfState>("eos")),
     // Materials
     _kappa(declareProperty<Real>("kappa")),
-    _kappa_max(declareProperty<Real>("kappa_max"))
+    _kappa_max(declareProperty<Real>("kappa_max")),
+    _residual(declareProperty<Real>("residual"))
 {
 }
 
@@ -58,7 +59,7 @@ void
 EntropyViscosityCoefficient::computeQpProperties()
 {
   // Cell size
-  Real h_cell = _current_elem->hmin();
+  Real h_cell = std::pow(_current_elem->volume(),1./_mesh.dimension());
   
   // Momentum vector
   RealVectorValue hU(_hu[_qp], _hv[_qp], 0.);
@@ -70,13 +71,14 @@ EntropyViscosityCoefficient::computeQpProperties()
   _kappa_max[_qp] = 0.5*h_cell*(hU.size()/_h[_qp]+std::sqrt(c2));
 
   // Weights for BDF2
-  Real w0 = _t_step > 1 ? (2.*_dt+_dt_old)/(_dt*(_dt+_dt_old)) : 1. / _dt;
-  Real w1 = _t_step > 1 ? -(_dt+_dt_old)/(_dt*_dt_old) : -1. / _dt;
-  Real w2 = _t_step > 1 ? _dt/(_dt_old*(_dt+_dt_old)) : 0.;
+  Real w0 = _t_step > 2 ? (2.*_dt+_dt_old)/(_dt*(_dt+_dt_old)) : 1. / _dt;
+  Real w1 = _t_step > 2 ? -(_dt+_dt_old)/(_dt*_dt_old) : -1. / _dt;
+  Real w2 = _t_step > 2 ? _dt/(_dt_old*(_dt+_dt_old)) : 0.;
 
   // Entropy residual
   Real residual = w0*_E[_qp]+w1*_E_old[_qp]+w2*_E_older[_qp];
   residual += _F_grad[_qp](0)+_G_grad[_qp](1);
+  _residual[_qp] = std::fabs(residual);
 
   // Froude number
   Real Froude = hU.size()/_h[_qp]/std::sqrt(_g*(_h[_qp]+1.e-6));
@@ -85,16 +87,7 @@ EntropyViscosityCoefficient::computeQpProperties()
   Real norm = _g*(_h[_qp]+_b[_qp]+1.e-6);
 
   // High-order viscosity coefficient
-  Real kappa = _t_step == 1 ? _kappa_max[_qp] : _Ce*h_cell*h_cell*std::fabs(residual/norm*Froude);
-//  if (_t_step>1) {
-//    std::cout<<kappa<<std::endl;
-//    std::cout<<"w0="<<w0<<std::endl;
-//    std::cout<<"w1="<<w1<<std::endl;
-//    std::cout<<"w2="<<w2<<std::endl;
-//    std::cout<<"E="<<_E[_qp]<<std::endl;
-//    std::cout<<"E_old="<<_E_old[_qp]<<std::endl;
-//    std::cout<<"E_older="<<_E_older[_qp]<<std::endl;
-//  }
+  Real kappa = _t_step == 1 ? _kappa_max[_qp] : _Ce*h_cell*h_cell*std::fabs(residual/norm);
 
   // Return value of the viscosity coefficient
   _kappa[_qp] = _is_first_order ? _kappa_max[_qp] : std::min(kappa, _kappa_max[_qp]);
