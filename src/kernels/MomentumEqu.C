@@ -52,10 +52,10 @@ MomentumEqu::computeQpResidual()
   Real advc = _u[_qp]/_h[_qp]*(hU*_grad_test[_i][_qp]);
 
   // Topology
-  RealVectorValue tplg_grad = _g*_h[_qp]*_b_grad[_qp]*_test[_i][_qp];
+  Real tplg_grad = _g*_h[_qp]*_b_grad[_qp](_component)*_test[_i][_qp];
 
   // return value
-  return -advc-p+tplg_grad(_component);
+  return -advc-p+tplg_grad;
 }
 
 Real
@@ -76,10 +76,10 @@ MomentumEqu::computeQpJacobian()
   Real dadvcdu = _phi[_j][_qp]/_h[_qp]*(hU*_grad_test[_i][_qp]);
 
   // Topology
-  RealVectorValue dtplg_grad_du(0., 0., 0.);
+  Real dtplg_grad_du= 0.;
 
   // return value
-  return -dadvcdu-dpdu+dtplg_grad_du(_component);
+  return -dadvcdu-dpdu+dtplg_grad_du;
 }
 
 Real
@@ -97,12 +97,12 @@ MomentumEqu::computeQpOffDiagJacobian(unsigned int jvar)
     dadvcdh *= _phi[_j][_qp];
 
     // Topology
-    RealVectorValue dtplg_grad_dh = _phi[_j][_qp]*_g*_b_grad[_qp]*_test[_i][_qp];
+    Real dtplg_grad_dh = _phi[_j][_qp]*_g*_b_grad[_qp](_component)*_test[_i][_qp];
 
     // return value
-    return -dadvcdh-dpdh+dtplg_grad_dh(_component);
+    return -dadvcdh-dpdh+dtplg_grad_dh;
   }
-  else if (jvar == _hu_var) // x-component of momentum vector 'hu'
+  else if (jvar == _hu_var && _component == 1) // x-component of momentum vector 'hu'
   {
     RealVectorValue hU(_hu[_qp], _hv[_qp], 0.);
     // Pressure
@@ -111,16 +111,17 @@ MomentumEqu::computeQpOffDiagJacobian(unsigned int jvar)
 
     // Advection
     hU(0) = 1.;
+    hU(1) = 0.;
     Real dadvcdhu = _u[_qp]/_h[_qp]*(hU*_grad_test[_i][_qp]);
     dadvcdhu *= _phi[_j][_qp];
 
     // Topology
-    RealVectorValue dtplg_grad_dhu(0., 0., 0.);
+    Real dtplg_grad_dhu=0.;
 
     // return value
-    return -dadvcdhu-dpdhu+dtplg_grad_dhu(_component);
+    return -dadvcdhu-dpdhu+dtplg_grad_dhu;
   }
-  else if (jvar == _hv_var) // y-component of momentum vector 'hv'
+  else if (jvar == _hv_var && _component == 0) // y-component of momentum vector 'hv'
   {
     RealVectorValue hU(_hu[_qp], _hv[_qp], 0.);    
     // Pressure
@@ -128,15 +129,16 @@ MomentumEqu::computeQpOffDiagJacobian(unsigned int jvar)
     dpdhv *= _eos.dp_dhv(_h[_qp], hU);
 
     // Advection
+    hU(0) = 0.;
     hU(1) = 1.;
     Real dadvcdhv = _u[_qp]/_h[_qp]*(hU*_grad_test[_i][_qp]);
     dadvcdhv *= _phi[_j][_qp];
 
     // Topology
-    RealVectorValue dtplg_grad_dhv(0., 0., 0.);
+    Real dtplg_grad_dhv=0.;
 
     // return value
-    return -dadvcdhv-dpdhv+dtplg_grad_dhv(_component);
+    return -dadvcdhv-dpdhv+dtplg_grad_dhv;
   }
   else
     return 0.;
