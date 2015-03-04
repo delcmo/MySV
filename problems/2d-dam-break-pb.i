@@ -1,18 +1,21 @@
 [Mesh]
-  type = GeneratedMesh
   dim = 2
-  nx = 10
-  ny = 10
-  xmin = 0.
-  xmax = 1.
-  ymin = 0.
-  ymax = 1.
+#  file=partial-dam-break-small.e
+  file=partial-dam-break-line.e
+  uniform_refine = 2
 []
 
 [Functions]
   [./topology]
     type = ConstantFunction
     value = 0.
+  [../]
+  
+  [./ic_func]
+    axis = 0
+    type = PiecewiseLinear
+    x = '-700  -0.5   0.5  700'
+    y = '10    10   9.5    9.5'
   [../]
 []
 
@@ -28,12 +31,8 @@
     family = LAGRANGE
     order = first
     [./InitialCondition]
-      type = StepIC
-      h_left=2.
-      h_right=1.
-      radius=0.1
-      x_source=0.5
-      y_source=0.5
+      type = FunctionIC
+      function = ic_func
     [../]
   [../]
 
@@ -115,7 +114,7 @@
   component = 1
   eos = hydro
   [../]
-
+  
   [./YMomDissip]
     type = ArtificialDissipativeFlux
     variable = hv
@@ -193,8 +192,7 @@
 [Materials]
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
-    block = 0
-    is_first_order = true
+    block = 1
     h = h
     hu = hu
     hv = hv
@@ -207,34 +205,44 @@
 
 [BCs]
   [./bc_h]
-    type = DirichletBC
+    type = SolidWallBC
     variable = h
-    boundary = 'left right top bottom'
-    value = 1.
+    boundary = '1 2 3'
+    equ_name = continuity
+    h = h
+    hu = hu
+    hv = hv
+    eos = hydro
   [../]
 
   [./bc_hu]
-    type = DirichletBC
+    type = SolidWallBC
     variable = hu
-    boundary = 'left right top bottom'
-    value = 0.
+    boundary = '1 2 3'
+    equ_name = x_mom
+    h = h
+    hu = hu
+    hv = hv
+    eos = hydro
   [../]
   
   [./bc_hv]
-    type = DirichletBC
+    type = SolidWallBC
     variable = hv
-    boundary = 'left right top bottom'
-    value = 0.
+    boundary = '1 2 3'
+    equ_name = y_mom
+    h = h
+    hu = hu
+    hv = hv
+    eos = hydro
   [../]
 []
 
 [Preconditioning]
   [./FDP]
-    type = SMP
+    type = SMP # FDP
     full = true
-    solve_type = 'NEWTON' # 'PJFNK'
-#    petsc_options_iname = '-snes_type -snes_test_err'
-#    petsc_options_value = 'test       1e-10'
+    solve_type = 'PJFNK'
   [../]
 []
 
@@ -242,14 +250,32 @@
   type = Transient
   scheme = bdf2
   
-  dt = 1.e-4
+  dt = 1.e-2
+  
+  [./TimeStepper]
+    type = FunctionDT
+    time_t =  '0  0.1.'
+    time_dt = '5.e-3  5.e-2'
+  [../]
 
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-8
   nl_max_its = 30
 
-  num_steps = 10
+  end_time = 10.
+#  num_steps = 10
 
+#  [./Adaptivity]
+#    refine_fraction = 0.5
+#    coarsen_fraction = 0.05
+#    max_h_level = 4
+#    error_estimator = PatchRecoveryErrorEstimator
+#  [../]
+
+  [./Quadrature]
+    type = GAUSS
+    order = SECOND
+  [../]
 []
 
 [Outputs]

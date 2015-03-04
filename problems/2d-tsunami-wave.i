@@ -1,8 +1,8 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 10
-  ny = 10
+  nx = 50
+  ny = 50
   xmin = 0.
   xmax = 1.
   ymin = 0.
@@ -11,8 +11,11 @@
 
 [Functions]
   [./topology]
-    type = ConstantFunction
-    value = 0.
+    type = VariableDepthRiverbed2D
+    xmin = 0.4
+    xmax = 0.6
+    ymin = 0.4
+    ymax = 0.6
   [../]
 []
 
@@ -28,12 +31,8 @@
     family = LAGRANGE
     order = first
     [./InitialCondition]
-      type = StepIC
-      h_left=2.
-      h_right=1.
-      radius=0.1
-      x_source=0.5
-      y_source=0.5
+      type = ConstantIC
+      value = 1.
     [../]
   [../]
 
@@ -90,6 +89,7 @@
   hv = hv  
   gravity = 9.8
   component = 0
+  b = b_aux
   eos = hydro
   [../]
 
@@ -113,9 +113,10 @@
   hv = hv
   gravity = 9.8
   component = 1
+  b = b_aux
   eos = hydro
   [../]
-
+  
   [./YMomDissip]
     type = ArtificialDissipativeFlux
     variable = hv
@@ -124,6 +125,11 @@
 []
 
 [AuxVariables]
+  [./b_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
   [./entropy_aux]
     family = LAGRANGE
     order = FIRST
@@ -151,6 +157,12 @@
 []
 
 [AuxKernels]
+  [./b_ak]
+    type = FunctionAux
+    variable = b_aux
+    function = topology
+  [../]
+
   [./entropy_ak]
     type = EnergySw
     variable = entropy_aux
@@ -194,7 +206,6 @@
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
     block = 0
-    is_first_order = true
     h = h
     hu = hu
     hv = hv
@@ -206,35 +217,66 @@
 []
 
 [BCs]
-  [./bc_h]
+  [./bc_h_left]
     type = DirichletBC
     variable = h
-    boundary = 'left right top bottom'
-    value = 1.
+    boundary = '3'
+    value = 2.
+  [../]
+
+  [./bc_h]
+    type = SolidWallBC
+    variable = h
+    boundary = '0 1 2'
+    equ_name = continuity
+    h = h
+    hu = hu
+    hv = hv
+    eos = hydro
+  [../]
+
+  [./bc_hu_left]
+    type = DirichletBC
+    variable = hu
+    boundary = '3'
+    value = 0.
   [../]
 
   [./bc_hu]
-    type = DirichletBC
+    type = SolidWallBC
     variable = hu
-    boundary = 'left right top bottom'
-    value = 0.
+    boundary = '0 1 2'
+    equ_name = x_mom
+    h = h
+    hu = hu
+    hv = hv
+    eos = hydro
   [../]
-  
-  [./bc_hv]
+
+  [./bc_hv_left]
     type = DirichletBC
     variable = hv
-    boundary = 'left right top bottom'
+    boundary = '3'
     value = 0.
+  [../]
+
+  [./bc_hv]
+    type = SolidWallBC
+    variable = hv
+    boundary = '0 1 2'
+    equ_name = y_mom
+    h = h
+    hu = hu
+    hv = hv
+    eos = hydro
   [../]
 []
 
 [Preconditioning]
   [./FDP]
-    type = SMP
+    type = SMP # FDP
     full = true
-    solve_type = 'NEWTON' # 'PJFNK'
-#    petsc_options_iname = '-snes_type -snes_test_err'
-#    petsc_options_value = 'test       1e-10'
+    solve_type = 'PJFNK'
   [../]
 []
 
@@ -242,14 +284,25 @@
   type = Transient
   scheme = bdf2
   
-  dt = 1.e-4
+  dt = 1.e-2
+  
+  [./TimeStepper]
+    type = FunctionDT
+    time_t =  '0  0.1.'
+    time_dt = '1.e-2  1.e-2'
+  [../]
 
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-8
   nl_max_its = 30
 
-  num_steps = 10
+  end_time = 10.
+  num_steps = 100
 
+  [./Quadrature]
+    type = GAUSS
+    order = SECOND
+  [../]
 []
 
 [Outputs]

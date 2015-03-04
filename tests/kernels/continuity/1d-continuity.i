@@ -64,9 +64,18 @@
   [../]
 []
 
+[Preconditioning]
+  [./FDP]
+    type = SMP
+    full = true
+    solve_type = 'NEWTON' # 'PJFNK'
+#    petsc_options_iname = '-snes_type -snes_test_err'
+#    petsc_options_value = 'test       1e-10'
+  [../]
+[]
+
 [Executioner]
   type = Transient
-  solve_type = 'PJFNK'
 
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-6
