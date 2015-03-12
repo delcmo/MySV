@@ -35,6 +35,9 @@
 #include "LapidusViscosityCoefficient.h"
 #include "PressureBasedViscosityCoefficient.h"
 
+// posprocessors
+#include "TimeStepCFL.h"
+
 // functions
 #include "VariableDepthRiverbed1D.h"
 #include "VariableDepthRiverbed2D.h"
@@ -107,6 +110,9 @@ MysvApp::registerObjects(Factory & factory)
   registerMaterial(EntropyViscosityCoefficient);
   registerMaterial(LapidusViscosityCoefficient);
   registerMaterial(PressureBasedViscosityCoefficient);
+
+  // postprocessors
+  registerPostprocessor(TimeStepCFL);
 
   // functions
   registerFunction(VariableDepthRiverbed1D);

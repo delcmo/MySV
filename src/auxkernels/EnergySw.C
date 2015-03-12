@@ -45,5 +45,5 @@ Real
 EnergySw::computeValue()
 {
   RealVectorValue U(_hu[_qp]/_h[_qp], _hv[_qp]/_h[_qp], 0.);
-  return 0.5*_h[_qp]*(_g+U.size_sq());
+  return 0.5*_h[_qp]*(_g*_h[_qp]+U.size_sq());
 }

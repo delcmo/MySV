@@ -1,21 +1,17 @@
-[GlobalParams]
-  lumping = false
-[]
-
 [Mesh]
   type = GeneratedMesh
   dim = 1
   xmin = 0.
-  xmax = 100.
-  nx = 400
+  xmax = 2000.
+  nx = 2000
 []
 
 [Functions]
   [./ic_func]
     axis = 0
     type = PiecewiseLinear
-    x = '0  50  50.1 100'
-    y = '10 10  0.5  0.5'
+    x = '0  1000  1000.1 2000'
+    y = '10 10    0.5    0.5'
   [../]
 []
 
@@ -111,11 +107,6 @@
     family = MONOMIAL
     order = CONSTANT
   [../]
-  
-  [./residual_aux]
-    family = MONOMIAL
-    order = CONSTANT
-  [../]
 []
 
 [AuxKernels]
@@ -152,20 +143,14 @@
     variable = kappa_max_aux
     property = kappa_max
   [../]
- 
-  [./residual_ak]
-    type = MaterialRealAux
-    variable = residual_aux
-    property = residual
-  [../]
 []
 
 [Materials]
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
     block = 0
-    is_first_order = true
-    Ce = 5.
+    is_first_order = false
+    Ce = 1.1
     h = h
     hu = hu
     entropy = entropy_aux
@@ -210,7 +195,7 @@
     h = h
     hu = hu
     eos = hydro
-    cfl = 0.5
+    cfl = 0.8
     outputs = none
   [../]
 []
@@ -232,7 +217,7 @@
   [./TimeStepper]
   type = PostprocessorDT
   postprocessor = dt
-  dt = 1.e-2
+  dt = 1.e-1
 #    type = FunctionDT
 #    time_t = '0 50'
 #    time_dt= '1e-1 1e-1'
@@ -242,11 +227,7 @@
   nl_abs_tol = 1e-6
   nl_max_its = 10
 
-  [./Quadrature]
-    type = GAUSS
-    order = SECOND
-  [../]
-  end_time = 4.
+  end_time = 50.
 #  num_steps = 10
 
 []

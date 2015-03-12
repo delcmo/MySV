@@ -1,21 +1,18 @@
-[GlobalParams]
-  lumping = false
-[]
-
 [Mesh]
   type = GeneratedMesh
-  dim = 1
+  dim = 2
+  nx = 100
+  ny = 100
   xmin = 0.
-  xmax = 100.
-  nx = 400
+  xmax = 1.
+  ymin = 0.
+  ymax = 1.
 []
 
 [Functions]
-  [./ic_func]
-    axis = 0
-    type = PiecewiseLinear
-    x = '0  50  50.1 100'
-    y = '10 10  0.5  0.5'
+  [./topology]
+    type = ConstantFunction
+    value = 0.
   [../]
 []
 
@@ -29,24 +26,38 @@
 [Variables]
   [./h]
     family = LAGRANGE
-    order = FIRST
+    order = first
     [./InitialCondition]
-      type = FunctionIC
-      function = ic_func
+      type = StepIC
+      h_left=10.
+      h_right=1.
+      radius=0.1
+      x_source=0.5
+      y_source=0.5
     [../]
   [../]
 
   [./hu]
     family = LAGRANGE
-    order = FIRST  
+    order = first  
     [./InitialCondition]
-      type = ConstantIC
-      value = 0.
+    type = ConstantIC
+    value = 0.
+    [../]
+  [../]
+  
+  [./hv]
+    family = LAGRANGE
+    order = first  
+    [./InitialCondition]
+    type = ConstantIC
+    value = 0.
     [../]
   [../]
 []
 
 [Kernels]
+  # Water height equation
   [./TimeMass]
     type = TimeDerivative
     variable = h
@@ -56,48 +67,74 @@
     type = WaterHeightEqu
     variable = h
     hu = hu
+    hv = hv
   [../]
-
-  [./ArtDiffMass]
+  
+  [./MassDissip]
     type = ArtificialDissipativeFlux
     variable = h
     equ_name = continuity
   [../]
 
-  [./TimeMmom]
+  # x-momentum equation
+  [./TimeXMom]
     type = TimeDerivative
     variable = hu
   [../]
 
-  [./Momentum]
-    type = MomentumEqu
-    variable = hu
-    h = h
-    hu = hu
-    gravity = 9.8
-    component = 0
-    eos = hydro
+  [./XMomentum]
+  type = MomentumEqu
+  variable = hu
+  h = h
+  hu = hu
+  hv = hv  
+  gravity = 9.8
+  component = 0
+  eos = hydro
   [../]
-  
-  [./ArtDiffMom]
+
+  [./XMomDissip]
     type = ArtificialDissipativeFlux
     variable = hu
     equ_name = x_mom
   [../]
+
+  # y-momentum equation  
+  [./TimeYMom]
+    type = TimeDerivative
+    variable = hv
+  [../]
+
+  [./YMomentum]
+  type = MomentumEqu
+  variable = hv
+  h = h
+  hu = hu
+  hv = hv
+  gravity = 9.8
+  component = 1
+  eos = hydro
+  [../]
+
+  [./YMomDissip]
+    type = ArtificialDissipativeFlux
+    variable = hv
+    equ_name = y_mom
+  [../]
 []
 
 [AuxVariables]
-  [./u_aux]
-    family = LAGRANGE
-    order = FIRST
-  [../]
-
   [./entropy_aux]
     family = LAGRANGE
     order = FIRST
   [../]
 
   [./F_aux]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  [./G_aux]
     family = LAGRANGE
     order = FIRST
   [../]
@@ -119,18 +156,12 @@
 []
 
 [AuxKernels]
-  [./u_ak]
-    type = Xvelocity
-    variable = u_aux
-    h = h
-    hu = hu
-  [../]
-
   [./entropy_ak]
     type = EnergySw
     variable = entropy_aux
     h = h
     hu = hu
+    hv = hv
   [../]
 
   [./F_ak]
@@ -139,6 +170,16 @@
     momentum = hu
     h = h
     hu = hu
+    hv = hv
+  [../]
+
+  [./G_ak]
+    type = EnergyFluxSw
+    variable = G_aux
+    momentum = hv
+    h = h
+    hu = hu
+    hv = hv    
   [../]
 
   [./kappa_ak]
@@ -152,8 +193,8 @@
     variable = kappa_max_aux
     property = kappa_max
   [../]
- 
-  [./residual_ak]
+  
+  [./ressidual_ak]
     type = MaterialRealAux
     variable = residual_aux
     property = residual
@@ -164,90 +205,67 @@
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
     block = 0
-    is_first_order = true
-    Ce = 5.
+    is_first_order = false
     h = h
     hu = hu
+    hv = hv
     entropy = entropy_aux
     F = F_aux
+    G = G_aux    
     eos = hydro
   [../]
 []
 
 [BCs]
-  [./left_h]
+  [./bc_h]
     type = DirichletBC
     variable = h
-    boundary = left
-    value = 10.
+    boundary = 'left right top bottom'
+    value = 1.
   [../]
 
-  [./right_h]
-    type = DirichletBC
-    variable = h
-    boundary = right
-    value = 0.5
-  [../]
-
-  [./left_hu]
+  [./bc_hu]
     type = DirichletBC
     variable = hu
-    boundary = left
+    boundary = 'left right top bottom'
     value = 0.
   [../]
-
-  [./right_hu]
+  
+  [./bc_hv]
     type = DirichletBC
-    variable = hu
-    boundary = right
+    variable = hv
+    boundary = 'left right top bottom'
     value = 0.
-  [../]
-[]
-
-[Postprocessors]
-  [./dt]
-    type = TimeStepCFL
-    h = h
-    hu = hu
-    eos = hydro
-    cfl = 0.5
-    outputs = none
   [../]
 []
 
 [Preconditioning]
   [./FDP]
-    type = FDP
+    type = SMP
     full = true
     solve_type = 'PJFNK'
+#    petsc_options_iname = '-pc_type'
+#    petsc_options_value = 'lu'
   [../]
 []
 
 [Executioner]
   type = Transient
-  scheme = bdf2
-
-  dt = 1.e-2
+  scheme = 'bdf2'
   
-  [./TimeStepper]
-  type = PostprocessorDT
-  postprocessor = dt
-  dt = 1.e-2
-#    type = FunctionDT
-#    time_t = '0 50'
-#    time_dt= '1e-1 1e-1'
-  [../]
+  dt = 5.e-4
 
   nl_rel_tol = 1e-12
-  nl_abs_tol = 1e-6
-  nl_max_its = 10
+  nl_abs_tol = 1e-8
+  nl_max_its = 30
 
+  start_time = 0.0
+  num_steps = 100
+  
   [./Quadrature]
     type = GAUSS
     order = SECOND
   [../]
-  end_time = 4.
-#  num_steps = 10
 
 []
 

@@ -71,9 +71,9 @@ EntropyViscosityCoefficient::computeQpProperties()
   _kappa_max[_qp] = 0.5*h_cell*(hU.size()/_h[_qp]+std::sqrt(c2));
 
   // Weights for BDF2
-  Real w0 = _t_step > 2 ? (2.*_dt+_dt_old)/(_dt*(_dt+_dt_old)) : 1. / _dt;
-  Real w1 = _t_step > 2 ? -(_dt+_dt_old)/(_dt*_dt_old) : -1. / _dt;
-  Real w2 = _t_step > 2 ? _dt/(_dt_old*(_dt+_dt_old)) : 0.;
+  Real w0 = _t_step > 1 ? (2.*_dt+_dt_old)/(_dt*(_dt+_dt_old)) : 1. / _dt;
+  Real w1 = _t_step > 1 ? -(_dt+_dt_old)/(_dt*_dt_old) : -1. / _dt;
+  Real w2 = _t_step > 1 ? _dt/(_dt_old*(_dt+_dt_old)) : 0.;
 
   // Entropy residual
   Real residual = w0*_E[_qp]+w1*_E_old[_qp]+w2*_E_older[_qp];
