@@ -3,6 +3,6 @@
 #ifndef MYSV_REVISION_H
 #define MYSV_REVISION_H
 
-#define MYSV_REVISION "git commit a282b34 on 2015-02-24"
+#define MYSV_REVISION "git commit 3b43174 on 2015-03-12"
 
 #endif // MYSV_REVISION_H

@@ -61,12 +61,39 @@ SaintVenantSetWaterVelocity::computeQpResidual()
 Real
 SaintVenantSetWaterVelocity::computeQpJacobian()
 {
-  return 0.;
+  RealVectorValue hU(_h[_qp]*_u_bc, 0., 0.);
+  Real dpdhu = _eos.dp_dhu(_h[_qp], hU);
+  switch (_equ_type)
+  {
+    case continuity:
+      return _phi[_j][_qp]*_u_bc*_normals[_qp](0)*_test[_i][_qp];
+      break;
+    case x_mom:
+      return _phi[_j][_qp]*dpdhu*_normals[_qp](0)*_test[_i][_qp];
+      break;
+    default:
+      mooseError("'" << this->name() << "' Invalid equation name.");
+  }
 }
 
 Real
 SaintVenantSetWaterVelocity::computeQpOffDiagJacobian(unsigned jvar)
 {
-  return 0.;
+  RealVectorValue hU(_h[_qp]*_u_bc, 0., 0.);  
+  Real dpdu(0.0);
+  if (jvar == _h_var)
+  {
+    switch (_equ_type)
+    {
+      case x_mom:
+        dpdu = _eos.dp_dh(_h[_qp], hU);
+        return _phi[_j][_qp]*dpdu*_normals[_qp](0)*_test[_i][_qp];
+        break;
+      default:
+        mooseError("'" << this->name() << "' Invalid equation name.");
+    }
+  }
+  else
+    return 0.;
 }
 
