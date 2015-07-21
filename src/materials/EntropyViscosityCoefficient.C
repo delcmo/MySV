@@ -16,7 +16,8 @@ InputParameters validParams<EntropyViscosityCoefficient>()
   // Coupled aux variables
   params.addRequiredCoupledVar("entropy", "entropy function");
   params.addRequiredCoupledVar("F", "x-component of the entropy flux ");
-  params.addCoupledVar("G", "y-component of the entropy flux ");
+  params.addCoupledVar("G", "y-component of the entropy flux. ");
+  params.addCoupledVar("jump", 0., "jump of the entropy flux gradient");
   params.addCoupledVar("b", "topology");  
   // Equation of state
   params.addRequiredParam<UserObjectName>("eos", "Equation of state");
@@ -41,6 +42,8 @@ EntropyViscosityCoefficient::EntropyViscosityCoefficient(const std::string & nam
     // Coupled aux variables: entropy flux
     _F_grad(coupledGradient("F")),
     _G_grad(_mesh.dimension() == 2 ? coupledGradient("G") : _grad_zero),
+    // jumps
+    _jump(coupledValue("jump")),
     // Coupled aux variables: topology
     _b(isCoupled("b") ? coupledValue("b") : _zero),
     // Equation of state:
@@ -84,10 +87,10 @@ EntropyViscosityCoefficient::computeQpProperties()
   Real Froude = hU.size()/_h[_qp]/std::sqrt(_g*(_h[_qp]+1.e-6));
   
   // Normalization parameter
-  Real norm = _g*(_h[_qp]+_b[_qp]+1.e-6);
+  Real norm = std::fabs(_g*(_h[_qp]+_b[_qp]+1.e-6));
 
   // High-order viscosity coefficient
-  Real kappa = _t_step == 1 ? _kappa_max[_qp] : _Ce*h_cell*h_cell*std::fabs(residual/norm);
+  Real kappa = _t_step == 1 ? _kappa_max[_qp] : _Ce*h_cell*h_cell*std::max(std::fabs(residual), _jump[_qp])/norm;
 
   // Return value of the viscosity coefficient
   _kappa[_qp] = _is_first_order ? _kappa_max[_qp] : std::min(kappa, _kappa_max[_qp]);

@@ -1,5 +1,7 @@
 [GlobalParams]
   lumping = false
+  is_first_order = false
+  Ce = 5.
 []
 
 [Mesh]
@@ -7,7 +9,7 @@
   dim = 1
   xmin = -5.
   xmax = +5.
-  nx = 400
+  nx = 1000
 []
 
 [Functions]
@@ -23,6 +25,12 @@
   [./hydro]
     type = HydrostaticPressure
     gravity = 1.0
+  [../]
+
+  [./jump]
+    type = JumpInterface
+    entropy_flux_x = F_aux
+    var_name_jump = jump_aux
   [../]
 []
 
@@ -102,6 +110,11 @@
     order = FIRST
   [../]
 
+  [./jump_aux]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
+
   [./kappa_aux]
     family = MONOMIAL
     order = CONSTANT
@@ -164,12 +177,11 @@
   [./EntropyViscosityCoeff]
     type = EntropyViscosityCoefficient
     block = 0
-    is_first_order = false
-    Ce = 5.
     h = h
     hu = hu
     entropy = entropy_aux
     F = F_aux
+    jump = jump_aux
     eos = hydro
   [../]
 []
@@ -220,6 +232,9 @@
     type = FDP
     full = true
     solve_type = 'PJFNK'
+    petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
+    petsc_options_value = '1.e-9       ds             ds'
+    line_search = 'default'
   [../]
 []
 
