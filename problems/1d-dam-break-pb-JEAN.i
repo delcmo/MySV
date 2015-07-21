@@ -241,13 +241,11 @@
 [Executioner]
   type = Transient
   scheme = bdf2
-
-  dt = 1.e-2
   
   [./TimeStepper]
   type = PostprocessorDT
   postprocessor = dt
-  dt = 1.e-2
+  dt = 1.e-3
 #    type = FunctionDT
 #    time_t = '0 50'
 #    time_dt= '1e-1 1e-1'
