@@ -40,7 +40,10 @@ protected:
   VariableGradient & _F_grad;
   VariableGradient & _G_grad;
 
-  // COupled aux variables: topology
+  // Jumps
+  VariableValue & _jump;
+
+  // Coupled aux variables: topology
   VariableValue & _b;
 
   // Equation of state

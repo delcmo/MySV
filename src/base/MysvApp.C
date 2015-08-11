@@ -42,6 +42,9 @@
 #include "VariableDepthRiverbed1D.h"
 #include "VariableDepthRiverbed2D.h"
 
+// userobjects
+#include "JumpInterface.h"
+
 template<>
 InputParameters validParams<MysvApp>()
 {
@@ -117,6 +120,9 @@ MysvApp::registerObjects(Factory & factory)
   // functions
   registerFunction(VariableDepthRiverbed1D);
   registerFunction(VariableDepthRiverbed2D);
+
+  // userobjects
+  registerUserObject(JumpInterface);
 }
 
 void
