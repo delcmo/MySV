@@ -1,5 +1,6 @@
 [GlobalParams]
   lumping = false
+  gravity = 1.0
 []
 
 [Mesh]
@@ -7,7 +8,7 @@
   dim = 1
   xmin = -5.
   xmax = +5.
-  nx = 400
+  nx = 100
 []
 
 [Functions]
@@ -22,7 +23,6 @@
 [UserObjects]
   [./hydro]
     type = HydrostaticPressure
-    gravity = 1.0
   [../]
 []
 
@@ -74,7 +74,6 @@
     variable = hu
     h = h
     hu = hu
-    gravity = 1.0
     component = 0
     eos = hydro
   [../]
@@ -165,7 +164,7 @@
     type = EntropyViscosityCoefficient
     block = 0
     is_first_order = false
-    Ce = 5.
+    Ce = 1.
     h = h
     hu = hu
     entropy = entropy_aux
@@ -215,45 +214,57 @@
   [../]
 []
 
+########################
+### preconditioner
+########################
 [Preconditioning]
   [./FDP]
     type = FDP
     full = true
     solve_type = 'PJFNK'
+    petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
+    petsc_options_value = '1.e-10       ds             ds'
+    line_search = 'default'
   [../]
 []
 
+########################
+### run options
+########################
 [Executioner]
   type = Transient
   scheme = bdf2
 
   dt = 1.e-2
-  
-  [./TimeStepper]
-  type = PostprocessorDT
-  postprocessor = dt
-  dt = 1.e-2
-#    type = FunctionDT
-#    time_t = '0 50'
-#    time_dt= '1e-1 1e-1'
-  [../]
 
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-6
   nl_max_its = 10
 
+#  end_time = 2
+  num_steps = 100
+  
   [./Quadrature]
     type = GAUSS
     order = SECOND
   [../]
-  end_time = 2.
-#  num_steps = 10
 
 []
 
+
 [Outputs]
-  output_initial = false
+  output_initial = true
   exodus = true
+#  csv = true
   print_linear_residuals = false
   print_perf_log = true
+  file_base = test1
+[]
+
+########################
+### debugging
+########################
+[Debug]
+  show_var_residual = 'h hu'
+  show_var_residual_norms = true
 []

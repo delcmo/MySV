@@ -8,7 +8,7 @@ InputParameters validParams<EntropyViscosityCoefficient>()
   // Parameters
   params.addParam<bool>("is_first_order", false, "if true, use the first-order viscosity coefficient");
   params.addParam<Real>("Ce", 1., "coefficient for high-order viscosity coefficient");
-  params.addParam<Real>("gravity", 9.81, "gravity");
+  params.addRequiredParam<Real>("gravity", "gravity");
   // Coupled variables
   params.addRequiredCoupledVar("h", "high/density");
   params.addRequiredCoupledVar("hu", "x component of h*\vec{u}");
@@ -69,6 +69,7 @@ EntropyViscosityCoefficient::computeQpProperties()
 
   // First-order viscosity coefficient
   _kappa_max[_qp] = 0.5*h_cell*(hU.size()/_h[_qp]+std::sqrt(c2));
+ // _kappa_max[_qp] = 0.;
 
   // Weights for BDF2
   Real w0 = _t_step > 1 ? (2.*_dt+_dt_old)/(_dt*(_dt+_dt_old)) : 1. / _dt;

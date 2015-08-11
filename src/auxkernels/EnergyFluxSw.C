@@ -30,7 +30,7 @@ InputParameters validParams<EnergyFluxSw>()
   // Coupled aux variables
   params.addCoupledVar("b", "topology");
   // Gravity
-  params.addParam<Real>("gravity", 9.81, "value of the gravity");
+  params.addRequiredParam<Real>("gravity", "value of the gravity");
 
   return params;
 }
