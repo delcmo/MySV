@@ -54,6 +54,15 @@ MomentumEqu::computeQpResidual()
   // Topology
   Real tplg_grad = _g*_h[_qp]*_b_grad[_qp](_component)*_test[_i][_qp];
 
+/*  if(_q_point[_qp](0) >-1. & _q_point[_qp](0) <0.)
+    Moose::out << "qp="<<_q_point[_qp](0) << " Momentum:" << "\t h="  <<_h[_qp] 
+                                                          << "\t qx=" << _hu[_qp] 
+                                                          << "\t P="  << _eos.pressure(_h[_qp], hU) 
+                                                          << "\t src="<< tplg_grad 
+                                                          << "\t adv="<< _u[_qp]/_h[_qp]*(hU(0)) 
+                                                          << "\t RES="<<
+    ( -advc-p+tplg_grad ) << std::endl;
+*/
   // return value
   return -advc-p+tplg_grad;
 }

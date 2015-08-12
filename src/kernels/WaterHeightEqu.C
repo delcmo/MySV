@@ -26,6 +26,12 @@ WaterHeightEqu::computeQpResidual()
 {
   RealVectorValue conv(_hu[_qp], _hv[_qp], 0.);
 
+/*  if(_q_point[_qp](0) >-1. & _q_point[_qp](0) <0.)
+    Moose::out << "qp="<<_q_point[_qp](0) << " Continuity:" << "\t h  ="  <<_u[_qp] 
+                                                            << "\t qx =" << _hu[_qp] 
+                                                            << "\t RES="<<
+                                -conv*_grad_test[_i][_qp] << std::endl;
+*/
   // return
   return -conv*_grad_test[_i][_qp];
 }
