@@ -15,7 +15,7 @@ InputParameters validParams<EntropyViscosityCoefficient>();
 class EntropyViscosityCoefficient : public Material
 {
 public:
-  EntropyViscosityCoefficient(const std::string & name, InputParameters parameters);
+  EntropyViscosityCoefficient(const InputParameters & parameters);
   virtual ~EntropyViscosityCoefficient();
 
 protected:
@@ -24,6 +24,7 @@ protected:
   // Parameters
   bool _is_first_order;
   Real _Ce;
+  Real _Cjump;
   Real _g;
 
   // Coupled variables

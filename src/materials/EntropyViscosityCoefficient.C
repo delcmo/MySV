@@ -8,6 +8,7 @@ InputParameters validParams<EntropyViscosityCoefficient>()
   // Parameters
   params.addParam<bool>("is_first_order", false, "if true, use the first-order viscosity coefficient");
   params.addParam<Real>("Ce", 1., "coefficient for high-order viscosity coefficient");
+  params.addParam<Real>("Cjump", 1., "coefficient for jump in high-order viscosity coefficient");
   params.addRequiredParam<Real>("gravity", "gravity");
   // Coupled variables
   params.addRequiredCoupledVar("h", "high/density");
@@ -25,11 +26,12 @@ InputParameters validParams<EntropyViscosityCoefficient>()
   return params;
 }
 
-EntropyViscosityCoefficient::EntropyViscosityCoefficient(const std::string & name, InputParameters parameters) :
-    Material(name, parameters),
+EntropyViscosityCoefficient::EntropyViscosityCoefficient(const InputParameters & parameters) :
+    Material(parameters),
     // Parameters
     _is_first_order(getParam<bool>("is_first_order")),
     _Ce(getParam<Real>("Ce")),
+    _Cjump(getParam<Real>("Cjump")),
     _g(getParam<Real>("gravity")),
     // Coupled variables
     _h(coupledValue("h")),
@@ -91,7 +93,7 @@ EntropyViscosityCoefficient::computeQpProperties()
   Real norm = std::fabs(_g*(_h[_qp]+_b[_qp]+1.e-6));
 
   // High-order viscosity coefficient
-  Real kappa = _t_step == 1 ? _kappa_max[_qp] : _Ce*h_cell*h_cell*std::max(std::fabs(residual), _jump[_qp])/norm;
+  Real kappa = _t_step == 1 ? _kappa_max[_qp] : h_cell*h_cell*std::max( _Ce*std::fabs(residual), _Cjump*_jump[_qp])/norm;
 
   // Return value of the viscosity coefficient
   _kappa[_qp] = _is_first_order ? _kappa_max[_qp] : std::min(kappa, _kappa_max[_qp]);
