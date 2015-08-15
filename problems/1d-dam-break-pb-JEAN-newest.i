@@ -1,9 +1,7 @@
 [GlobalParams]
   lumping = false
-  gravity = 1.0
   is_first_order = false
   Ce = 5.
-  Cjump = 5.
 []
 
 [Mesh]
@@ -11,7 +9,7 @@
   dim = 1
   xmin = -5.
   xmax = +5.
-  nx = 100
+  nx = 1000
 []
 
 [Functions]
@@ -26,6 +24,7 @@
 [UserObjects]
   [./hydro]
     type = HydrostaticPressure
+    gravity = 1.0
   [../]
 
   [./jump]
@@ -83,6 +82,7 @@
     variable = hu
     h = h
     hu = hu
+    gravity = 1.0
     component = 0
     eos = hydro
   [../]
@@ -227,15 +227,7 @@
   [../]
 []
 
-########################
-### preconditioner
-########################
 [Preconditioning]
-active='FDP'
-  [./dbg]
-    type = FDP
-    full = true
-  [../]
   [./FDP]
     type = FDP
     full = true
@@ -246,52 +238,36 @@ active='FDP'
   [../]
 []
 
-########################
-### run options
-########################
 [Executioner]
   type = Transient
   scheme = bdf2
-
-  dt = 1.e-2
   
-#  [./TimeStepper]
-#  type = PostprocessorDT
-#  postprocessor = dt
-#  dt = 1.e-3
+  [./TimeStepper]
+  type = PostprocessorDT
+  postprocessor = dt
+  dt = 1.e-3
 #    type = FunctionDT
 #    time_t = '0 50'
 #    time_dt= '1e-1 1e-1'
-#  [../]
+  [../]
 
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-6
   nl_max_its = 10
 
-#  end_time = 2
-  num_steps = 16
-  
   [./Quadrature]
     type = GAUSS
     order = SECOND
   [../]
+  end_time = 2.
+#  num_steps = 10
 
 []
-
 
 [Outputs]
   output_initial = true
   exodus = true
-#  csv = true
+#  interval = 100
   print_linear_residuals = false
   print_perf_log = true
-  file_base = test1
-[]
-
-########################
-### debugging
-########################
-[Debug]
-  show_var_residual = 'h hu'
-  show_var_residual_norms = true
 []

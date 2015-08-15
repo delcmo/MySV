@@ -1,8 +1,8 @@
 [GlobalParams]
   lumping = false
   is_first_order = false
-  Ce = 5.
-  Cjump=7;
+  Ce   = 5.
+  Cjump= 5.;
 []
 
 [Mesh]
@@ -10,7 +10,7 @@
   dim = 1
   xmin = -5.
   xmax = +5.
-  nx = 1000
+  nx = 20
 []
 
 [Functions]
@@ -145,7 +145,7 @@
     variable = entropy_aux
     h = h
     hu = hu
-    gravity = 9.81
+    gravity = 1.
   [../]
 
   [./F_ak]
@@ -154,7 +154,7 @@
     momentum = hu
     h = h
     hu = hu
-    gravity = 9.81
+    gravity = 1.
   [../]
 
   [./kappa_ak]
@@ -186,7 +186,7 @@
     F = F_aux
     jump = jump_aux
     eos = hydro
-    gravity = 9.81
+    gravity = 1.
   [../]
 []
 
@@ -245,15 +245,16 @@
 [Executioner]
   type = Transient
   scheme = bdf2
-  
-  [./TimeStepper]
-  type = PostprocessorDT
-  postprocessor = dt
-  dt = 1.e-3
+  dt = 1.e-4
+    
+#  [./TimeStepper]
+#  type = PostprocessorDT
+#  postprocessor = dt
+#  dt = 1.e-3
 #    type = FunctionDT
 #    time_t = '0 50'
 #    time_dt= '1e-1 1e-1'
-  [../]
+#  [../]
 
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-6
@@ -263,8 +264,8 @@
     type = GAUSS
     order = SECOND
   [../]
-  end_time = 2.
-#  num_steps = 10
+#  end_time = 2.
+  num_steps = 5
 
 []
 
