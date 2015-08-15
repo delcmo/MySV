@@ -37,6 +37,12 @@ ArtificialDissipativeFlux::ArtificialDissipativeFlux(const InputParameters & par
 
 Real ArtificialDissipativeFlux::computeQpResidual()
 {
+    Moose::out  << "Stabilization_Kernel::qp=" << _q_point[_qp](0) 
+                << ",\t _grad_u[_qp]="         << _grad_u[_qp](0)
+                << ",\t kappa="                << _kappa[_qp]
+                << ",\t RESI="                 << _kappa[_qp]*_grad_u[_qp]*_grad_test[_i][_qp]
+                << std::endl;
+
   switch (_equ_type)
   {
     case continuity:

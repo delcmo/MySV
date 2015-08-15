@@ -97,4 +97,13 @@ EntropyViscosityCoefficient::computeQpProperties()
 
   // Return value of the viscosity coefficient
   _kappa[_qp] = _is_first_order ? _kappa_max[_qp] : std::min(kappa, _kappa_max[_qp]);
-}
+
+      Moose::out << " Compute_Viscosity:qp=" << _q_point[_qp](0) 
+                 << ",\t FOV= "           <<  _kappa_max[_qp]
+                 << ",\t entr_res[qp]= "  <<  std::fabs(residual)
+                 << ",\t jump[_qp]= "     <<  _jump[_qp]
+                 << ",\t norm= "          <<  norm
+                 << ",\t kappa_e= "       << h_cell*h_cell*std::max( _Ce*std::fabs(residual), _Cjump*_jump[_qp])/norm
+                 << ",\t kappa = "        << _kappa[_qp] 
+                 << std::endl;
+                 }
